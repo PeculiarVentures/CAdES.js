@@ -2,7 +2,7 @@ import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
 import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
-import IssuerSerial from "IssuerSerial";
+import IssuerSerial from "cadesjs/src/IssuerSerial";
 import GeneralNames from "pkijs/src/GeneralNames";
 import GeneralName from "pkijs/src/GeneralName";
 //**************************************************************************************
@@ -239,7 +239,7 @@ export default class ESSCertIDv2
 		
 		//region Fill correct value for "hashIndAlgorithm"
 		sequence = sequence.then(
-			result => {
+			() => {
 				if(hashAlgorithm.toUpperCase() !== "SHA-256")
 				{
 					const oid = getOIDByAlgorithm({ name: hashAlgorithm });

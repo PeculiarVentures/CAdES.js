@@ -1,10 +1,10 @@
 import * as asn1js from "asn1js";
 import { utilConcatBuf, getUTCDate } from "pvutils";
 import { getCrypto } from "pkijs/src/common";
-import ESSCertIDv2 from "ESSCertIDv2";
+import ESSCertIDv2 from "cadesjs/src/ESSCertIDv2";
 import SignedData from "pkijs/src/SignedData";
 import Attribute from "pkijs/src/Attribute";
-import SigningCertificateV2 from "SigningCertificateV2";
+import SigningCertificateV2 from "cadesjs/src/SigningCertificateV2";
 //**************************************************************************************
 /**
  * Creates common CAdES attributes for given CMS Signed Data
@@ -52,7 +52,7 @@ export function createCommonAttributes(cmsSigned, parameters)
 	
 	//region Prepare "Content type" and "Signing Time" attributes 
 	sequence = sequence.then(
-		result => {
+		() => {
 			//region Create "Content type" attribute 
 			const contentTypeAttribute = new Attribute({
 				type: "1.2.840.113549.1.9.3",

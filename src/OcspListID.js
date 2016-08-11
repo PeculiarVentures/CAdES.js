@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import OcspResponsesID from "OcspResponsesID";
+import OcspResponsesID from "cadesjs/src/OcspResponsesID";
 //**************************************************************************************
 export default class OcspListID
 {

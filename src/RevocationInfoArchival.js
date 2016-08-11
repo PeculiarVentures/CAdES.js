@@ -2,7 +2,7 @@ import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import CertificateRevocationList from "pkijs/src/CertificateRevocationList";
 import BasicOCSPResponse from "pkijs/src/BasicOCSPResponse";
-import OtherRevVals from "OtherRevVals";
+import OtherRevVals from "cadesjs/src/OtherRevVals";
 //**************************************************************************************
 export default class RevocationInfoArchival
 {

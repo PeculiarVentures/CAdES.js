@@ -291,7 +291,7 @@ export default class ATSHashIndex
 		
 		//region Fill correct value for "hashIndAlgorithm"
 		sequence = sequence.then(
-			result => {
+			() => {
 				if(hashAlgorithm.toUpperCase() !== "SHA-256")
 				{
 					const oid = getOIDByAlgorithm({ name: hashAlgorithm });
@@ -309,7 +309,7 @@ export default class ATSHashIndex
 		
 		//region Create array of indexes for all certificates
 		sequence = sequence.then(
-			result => {
+			() => {
 				const promises = [];
 				
 				if(("certificates" in cmsSigned) === false)
@@ -344,7 +344,7 @@ export default class ATSHashIndex
 		
 		//region Create array of indexes for all revocation values
 		sequence = sequence.then(
-			result => {
+			() => {
 				const promises = [];
 				
 				if(("crls" in cmsSigned) === false)
@@ -379,7 +379,7 @@ export default class ATSHashIndex
 		
 		//region Create array of indexes for unsigned attributes
 		sequence = sequence.then(
-			result => {
+			() => {
 				const promises = [];
 				
 				if(("unsignedAttrs" in cmsSigned.signerInfos[signerIndex]) === false)

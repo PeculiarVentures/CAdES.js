@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import CommitmentTypeQualifier from "CommitmentTypeQualifier";
+import CommitmentTypeQualifier from "cadesjs/src/CommitmentTypeQualifier";
 //**************************************************************************************
 export default class CommitmentTypeIndication
 {

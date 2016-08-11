@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import CrlOcspRef from "CrlOcspRef";
+import CrlOcspRef from "cadesjs/src/CrlOcspRef";
 //**************************************************************************************
 export default class CompleteRevocationRefs
 {

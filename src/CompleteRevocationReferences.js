@@ -1,9 +1,9 @@
-import CompleteRevocationRefs from "CompleteRevocationRefs";
-import CrlValidatedID from "CrlValidatedID";
-import OcspResponsesID from "OcspResponsesID";
-import CrlOcspRef from "CrlOcspRef";
-import CRLListID from "CRLListID";
-import OcspListID from "OcspListID";
+import CompleteRevocationRefs from "cadesjs/src/CompleteRevocationRefs";
+import CrlValidatedID from "cadesjs/src/CrlValidatedID";
+import OcspResponsesID from "cadesjs/src/OcspResponsesID";
+import CrlOcspRef from "cadesjs/src/CrlOcspRef";
+import CRLListID from "cadesjs/src/CRLListID";
+import OcspListID from "cadesjs/src/OcspListID";
 import Attribute from "pkijs/src/Attribute";
 //**************************************************************************************
 export default class CompleteRevocationReferences extends CompleteRevocationRefs

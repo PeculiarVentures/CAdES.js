@@ -1,8 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import OtherHashAlgAndValue from "OtherHashAlgAndValue";
-import CrlIdentifier from "CrlIdentifier";
+import OtherHashAlgAndValue from "cadesjs/src/OtherHashAlgAndValue";
+import CrlIdentifier from "cadesjs/src/CrlIdentifier";
 import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
 //**************************************************************************************
 export default class CrlValidatedID
@@ -244,7 +244,7 @@ export default class CrlValidatedID
 		
 		//region Fill correct value for "hashIndAlgorithm" 
 		sequence = sequence.then(
-			result => {
+			() => {
 				if(hashAlgorithm.toUpperCase() !== "SHA-1")
 				{
 					const oid = getOIDByAlgorithm({ name: hashAlgorithm });

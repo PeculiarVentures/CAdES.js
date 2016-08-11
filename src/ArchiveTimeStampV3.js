@@ -2,7 +2,7 @@ import * as asn1js from "asn1js";
 import { getParametersValue, utilConcatBuf } from "pvutils";
 import { getCrypto } from "pkijs/src/common";
 import ContentInfo from "pkijs/src/ContentInfo";
-import ATSHashIndex from "ATSHashIndex";
+import ATSHashIndex from "cadesjs/src/ATSHashIndex";
 import SignedData from "pkijs/src/SignedData";
 import IssuerAndSerialNumber from "pkijs/src/IssuerAndSerialNumber";
 import Attribute from "pkijs/src/Attribute";
@@ -90,8 +90,6 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 	getStampingBuffer(cmsSignedData, signerIndex, parameters)
 	{
 		//region Initial variables
-		const _this = this;
-		
 		let sequence = Promise.resolve();
 		
 		let hashAlgorithm = "SHA-256";
@@ -224,8 +222,6 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 	makeAttribute(parameters = {})
 	{
 		//region Initial variables
-		const _this = this;
-		
 		let tspResponse;
 		//endregion
 		

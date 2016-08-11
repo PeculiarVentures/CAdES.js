@@ -1,7 +1,7 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import OtherHashAlgAndValue from "OtherHashAlgAndValue";
-import SigPolicyQualifierInfo from "SigPolicyQualifierInfo";
+import OtherHashAlgAndValue from "cadesjs/src/OtherHashAlgAndValue";
+import SigPolicyQualifierInfo from "cadesjs/src/SigPolicyQualifierInfo";
 //**************************************************************************************
 export default class SignaturePolicyId
 {

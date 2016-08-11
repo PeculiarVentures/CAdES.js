@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import OtherCertID from "OtherCertID";
+import OtherCertID from "cadesjs/src/OtherCertID";
 import PolicyInformation from "pkijs/src/PolicyInformation";
 //**************************************************************************************
 export default class OtherSigningCertificate

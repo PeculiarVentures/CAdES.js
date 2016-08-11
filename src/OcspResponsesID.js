@@ -1,8 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import OcspIdentifier from "OcspIdentifier";
-import OtherHashAlgAndValue from "OtherHashAlgAndValue";
+import OcspIdentifier from "cadesjs/src/OcspIdentifier";
+import OtherHashAlgAndValue from "cadesjs/src/OtherHashAlgAndValue";
 import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
 //**************************************************************************************
 export default class OcspResponsesID
@@ -236,7 +236,7 @@ export default class OcspResponsesID
 		
 		//region Fill correct value for "hashIndAlgorithm"
 		sequence = sequence.then(
-			result => {
+			() => {
 				if(hashAlgorithm.toUpperCase() !== "SHA-1")
 				{
 					const oid = getOIDByAlgorithm({ name: hashAlgorithm });

@@ -1,6 +1,6 @@
-import CompleteCertificateRefs from "CompleteCertificateRefs";
+import CompleteCertificateRefs from "cadesjs/src/CompleteCertificateRefs";
 import SignedData from "pkijs/src/SignedData";
-import OtherCertID from "OtherCertID";
+import OtherCertID from "cadesjs/src/OtherCertID";
 import Attribute from "pkijs/src/Attribute";
 //**************************************************************************************
 export default class CompleteCertificateReferences extends CompleteCertificateRefs
