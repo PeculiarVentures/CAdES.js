@@ -1,7 +1,7 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import CertificateRevocationList from "pkijs/src/CertificateRevocationList";
-import BasicOCSPResponse from "pkijs/src/BasicOCSPResponse";
+import OCSPResponse from "pkijs/src/OCSPResponse";
 import OtherRevVals from "cadesjs/src/OtherRevVals";
 //**************************************************************************************
 export default class RevocationInfoArchival
@@ -24,7 +24,7 @@ export default class RevocationInfoArchival
 		
 		if("ocsp" in parameters)
 			/**
-			 * @type {Array.<BasicOCSPResponse>}
+			 * @type {Array.<OCSPResponse>}
 			 * @description ocsp
 			 */
 			this.ocsp = getParametersValue(parameters, "ocsp", RevocationInfoArchival.defaultValues("ocsp"));
@@ -135,7 +135,7 @@ export default class RevocationInfoArchival
 							value: [
 								new asn1js.Repeated({
 									name: (names.ocsp || ""),
-									value: BasicOCSPResponse.schema()
+									value: OCSPResponse.schema()
 								})
 							]
 						})
@@ -192,7 +192,7 @@ export default class RevocationInfoArchival
 			this.crl = Array.from(asn1.result.crl, element => new CertificateRevocationList({ schema: element }));
 		
 		if("ocsp" in asn1.result)
-			this.ocsp = Array.from(asn1.result.ocsp, element => new BasicOCSPResponse({ schema: element }));
+			this.ocsp = Array.from(asn1.result.ocsp, element => new OCSPResponse({ schema: element }));
 		
 		if("otherRevInfo" in asn1.result)
 			this.otherRevInfo = new OtherRevVals({ schema: asn1.result.otherRevInfo });
