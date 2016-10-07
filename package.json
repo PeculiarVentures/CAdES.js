@@ -27,10 +27,10 @@
     "CAdES"
   ],
   "name": "cadesjs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "dependencies": {
-    "asn1js": "^2.0.0",
-    "pkijs": "^2.0.0",
+    "asn1js": "git+https://github.com/PeculiarVentures/asn1js-es6.git",
+    "pkijs": "https://github.com/PeculiarVentures/pkijs-es6.git",
     "pvutils": "^1.0.0"
   }
 }
