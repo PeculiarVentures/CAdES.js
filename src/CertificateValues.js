@@ -3,6 +3,7 @@ import { getParametersValue } from "pvutils";
 import Certificate from "pkijs/src/Certificate";
 import Attribute from "pkijs/src/Attribute";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class CertificateValues
 {
 	//**********************************************************************************

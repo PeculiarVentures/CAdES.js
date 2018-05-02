@@ -15,9 +15,17 @@
     "url": "git://github.com/PeculiarVenturess/CAdES.js.git"
   },
   "devDependencies": {
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-includepaths": "^0.1.5",
+    "babel-cli": "latest",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "latest",
+    "cross-env": "^5.1.4",
+    "eslint": "^4.19.1",
+    "mocha": "^3.0.2",
+    "nyc": "^11.6.0",
+    "rollup": "latest",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-builtins": "latest",
     "rollup-plugin-node-resolve": "^1.7.1"
   },
   "keywords": [
@@ -26,12 +34,16 @@
     "WebCrypto",
     "CAdES"
   ],
+  "scripts": {
+    "build:tests": "npm run build:examples",
+    "test": "cross-env NODE_ENV=test nyc mocha --timeout 40000 --require babel-register --require babel-polyfill"
+  },
   "name": "cadesjs",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "dependencies": {
-    "asn1js": "^2.0.0",
-    "pkijs": "^2.0.0",
-    "pvutils": "^1.0.0"
-  }
+    "pkijs": "latest",
+    "pvutils": "latest",
+    "asn1js": "latest"
+  },
+  "license": "MIT"
 }
-

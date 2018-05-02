@@ -1,7 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import NoticeReference from "cadesjs/src/NoticeReference";
+import NoticeReference from "./NoticeReference";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class SPUserNotice
 {
 	//**********************************************************************************

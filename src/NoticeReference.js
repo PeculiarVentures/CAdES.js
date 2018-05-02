@@ -140,12 +140,15 @@ export default class NoticeReference
 		switch(asn1.result.organization.idBlock.tagNumber)
 		{
 			case 26: // VISIBLESTRING
+				// noinspection JSUnusedGlobalSymbols
 				this._organizationType = 0;
 				break;
 			case 30: // BMPSTRING
+				// noinspection JSUnusedGlobalSymbols
 				this._organizationType = 1;
 				break;
 			case 12: // UTF8STRING
+				// noinspection JSUnusedGlobalSymbols
 				this._organizationType = 2;
 				break;
 			default:

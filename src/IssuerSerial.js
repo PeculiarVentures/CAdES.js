@@ -123,7 +123,9 @@ export default class IssuerSerial
 		//endregion
 
 		//region Get internal properties from parsed schema
+		// noinspection JSUnusedGlobalSymbols
 		this.issuer = new GeneralNames({ schema: asn1.result.issuer });
+		// noinspection JSUnusedGlobalSymbols
 		this.serialNumber = asn1.result.serialNumber;
 		//endregion
 	}

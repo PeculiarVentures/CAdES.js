@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import ESSCertIDv2 from "cadesjs/src/ESSCertIDv2";
+import ESSCertIDv2 from "./ESSCertIDv2";
 import PolicyInformation from "pkijs/src/PolicyInformation";
 //**************************************************************************************
 export default class SigningCertificateV2
@@ -132,6 +132,7 @@ export default class SigningCertificateV2
 		
 		//region Get internal properties from parsed schema
 		//region certs
+		// noinspection JSUnusedGlobalSymbols
 		this.certs = Array.from(asn1.result.certs, element => new ESSCertIDv2({ schema: element }));
 		//endregion
 		

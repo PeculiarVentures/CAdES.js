@@ -2,13 +2,14 @@ import * as asn1js from "asn1js";
 import { getParametersValue, utilConcatBuf } from "pvutils";
 import { getCrypto } from "pkijs/src/common";
 import ContentInfo from "pkijs/src/ContentInfo";
-import ATSHashIndex from "cadesjs/src/ATSHashIndex";
+import ATSHashIndex from "./ATSHashIndex";
 import SignedData from "pkijs/src/SignedData";
 import IssuerAndSerialNumber from "pkijs/src/IssuerAndSerialNumber";
 import Attribute from "pkijs/src/Attribute";
 import TimeStampResp from "pkijs/src/TimeStampResp";
 import SignedUnsignedAttributes from "pkijs/src/SignedAndUnsignedAttributes";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class ArchiveTimeStampV3 extends ContentInfo
 {
 	//**********************************************************************************
@@ -71,6 +72,7 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 			case "tspResponse":
 				return (memberValue.byteLength === 0);
 			case "aTSHashIndex":
+				// noinspection OverlyComplexBooleanExpressionJS
 				return ((("hashIndAlgorithm" in memberValue) === false) &&
 						(ATSHashIndex.compareWithDefault("certificatesHashIndex", memberValue.certificatesHashIndex)) &&
 						(ATSHashIndex.compareWithDefault("crlsHashIndex", memberValue.crlsHashIndex)) &&
@@ -80,6 +82,7 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 		}
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Get "ArrayBuffer" to transfer to time-stamp server
 	 * @param {SignedData} cmsSignedData CMS Signed Data to make attribute for
@@ -142,7 +145,7 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 		
 		//region Make hash of initial content
 		sequence = sequence.then(
-			result => crypto.digest({ name: hashAlgorithm }, content),
+			() => crypto.digest({ name: hashAlgorithm }, content),
 			error => Promise.reject(error)
 		);
 		//endregion
@@ -156,6 +159,7 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 				//endregion
 				
 				//region message-digest
+				// noinspection JSCheckFunctionSignatures
 				resultBuffer = utilConcatBuf(resultBuffer, result);
 				//endregion
 				

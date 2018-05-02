@@ -1,6 +1,7 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class ContentReference
 {
 	//**********************************************************************************
@@ -129,6 +130,7 @@ export default class ContentReference
 		//endregion
 		
 		//region Get internal properties from parsed schema
+		// noinspection JSUnusedGlobalSymbols
 		this.contentType = asn1.result.contentType.valueBlock.toString();
 		this.signedContentIdentifier = asn1.result.signedContentIdentifier;
 		this.originatorSignatureValue = asn1.result.originatorSignatureValue;

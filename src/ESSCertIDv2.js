@@ -2,7 +2,7 @@ import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
 import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
-import IssuerSerial from "cadesjs/src/IssuerSerial";
+import IssuerSerial from "./IssuerSerial";
 import GeneralNames from "pkijs/src/GeneralNames";
 import GeneralName from "pkijs/src/GeneralName";
 //**************************************************************************************
@@ -226,7 +226,7 @@ export default class ESSCertIDv2
 			hashAlgorithm = parameters.hashAlgorithm;
 		
 		if("certificate" in parameters)
-			certificate = parameters.certificate; // in_window.org.pkijs.simpl.CERT
+			certificate = parameters.certificate;
 		else
 			return Promise.reject("Parameter \"certificate\" is mandatory for making \"ESSCertIDv2\"");
 		//endregion
@@ -259,7 +259,7 @@ export default class ESSCertIDv2
 		
 		//region Create all remaining attributes
 		sequence = sequence.then(
-			result => crypto.digest({ name: hashAlgorithm }, certificate.toSchema().toBER(false)),
+			() => crypto.digest({ name: hashAlgorithm }, certificate.toSchema().toBER(false)),
 			error => Promise.reject(error)
 		).then(
 			result => {

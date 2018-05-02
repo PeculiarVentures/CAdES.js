@@ -2,7 +2,6 @@ import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
 import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
-import SignedData from "pkijs/src/SignedData";
 import OtherCertificateFormat from "pkijs/src/OtherCertificateFormat";
 import OtherRevocationInfoFormat from "pkijs/src/OtherRevocationInfoFormat";
 import Attribute from "pkijs/src/Attribute";
@@ -303,6 +302,8 @@ export default class ATSHashIndex
 						algorithmParams: new asn1js.Null()
 					});
 				}
+				
+				return Promise.resolve();
 			}
 		);
 		//endregion

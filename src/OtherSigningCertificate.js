@@ -1,8 +1,9 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import OtherCertID from "cadesjs/src/OtherCertID";
+import OtherCertID from "./OtherCertID";
 import PolicyInformation from "pkijs/src/PolicyInformation";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class OtherSigningCertificate
 {
 	//**********************************************************************************
@@ -134,6 +135,7 @@ export default class OtherSigningCertificate
 		
 		//region Get internal properties from parsed schema
 		//region certs
+		// noinspection JSUnusedGlobalSymbols
 		this.certs = Array.from(asn1.result.certs, element => new OtherCertID({ schema: element }));
 		//endregion
 		

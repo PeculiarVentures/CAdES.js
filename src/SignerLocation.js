@@ -1,7 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import DirectoryString from "cadesjs/src/DirectoryString";
+import DirectoryString from "./DirectoryString";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class SignerLocation
 {
 	//**********************************************************************************

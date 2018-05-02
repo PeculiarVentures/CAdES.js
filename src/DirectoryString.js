@@ -90,8 +90,10 @@ export default class DirectoryString
 		//endregion
 		
 		//region Get internal properties from parsed schema
+		// noinspection JSUnresolvedVariable
 		this.value = asn1.result.directoryString.valueBlock.value;
 		
+		// noinspection JSUnresolvedVariable
 		switch(asn1.result.directoryString.idBlock.tagNumber)
 		{
 			case 20: // TELETEXSTRING

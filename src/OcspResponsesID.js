@@ -1,8 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import OcspIdentifier from "cadesjs/src/OcspIdentifier";
-import OtherHashAlgAndValue from "cadesjs/src/OtherHashAlgAndValue";
+import OcspIdentifier from "./OcspIdentifier";
+import OtherHashAlgAndValue from "./OtherHashAlgAndValue";
 import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
 //**************************************************************************************
 export default class OcspResponsesID
@@ -258,7 +258,7 @@ export default class OcspResponsesID
 		
 		//region Create all remaining attributes
 		sequence = sequence.then(
-			result => crypto.digest({ name: hashAlgorithm }, ocspResponse.toSchema().toBER(false)),
+			() => crypto.digest({ name: hashAlgorithm }, ocspResponse.toSchema().toBER(false)),
 			error => Promise.reject(error)
 		).then(
 			result => {

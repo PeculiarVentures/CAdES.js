@@ -7,6 +7,7 @@ import SignedData from "pkijs/src/SignedData";
 import Attribute from "pkijs/src/Attribute";
 import TimeStampResp from "pkijs/src/TimeStampResp";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class SignatureTimeStamp extends ContentInfo
 {
 	//**********************************************************************************
@@ -73,6 +74,7 @@ export default class SignatureTimeStamp extends ContentInfo
 		//endregion
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Get "ArrayBuffer" to transfer to time-stamp server
 	 * @param {SignedData} cmsSignedData CMS Signed Data to make attribute for
@@ -98,7 +100,7 @@ export default class SignatureTimeStamp extends ContentInfo
 		//endregion
 		
 		return Promise.resolve().then(
-			result => crypto.digest({ name: hashAlgorithm }, cmsSignedData.signerInfos[signerIndex].signature.valueBlock.valueHex),
+			() => crypto.digest({ name: hashAlgorithm }, cmsSignedData.signerInfos[signerIndex].signature.valueBlock.valueHex),
 			error => Promise.reject(error)
 		);
 	}

@@ -1,8 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import OtherHashAlgAndValue from "cadesjs/src/OtherHashAlgAndValue";
-import CrlIdentifier from "cadesjs/src/CrlIdentifier";
+import OtherHashAlgAndValue from "./OtherHashAlgAndValue";
+import CrlIdentifier from "./CrlIdentifier";
 import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
 //**************************************************************************************
 export default class CrlValidatedID
@@ -177,7 +177,7 @@ export default class CrlValidatedID
 		//region Create array for output sequence
 		const outputArray = [];
 		
-		if(this.crlHash_type === 0) // OCTETSTRING
+		if(this._crlHashType === 0) // OCTETSTRING
 			outputArray.push(this.crlHash);
 		else
 			outputArray.push(this.crlHash.toSchema());
@@ -269,7 +269,7 @@ export default class CrlValidatedID
 		
 		//region Create all remaining attributes
 		sequence = sequence.then(
-			result => crypto.digest({ name: hashAlgorithm }, crl.toSchema().toBER(false)),
+			() => crypto.digest({ name: hashAlgorithm }, crl.toSchema().toBER(false)),
 			error => Promise.reject(error)
 		).then(
 			result => {

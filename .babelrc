@@ -1,0 +1,9 @@
+{
+	"compact": "false",
+	"presets": ["env"],
+    "env": {
+      "test": {
+        "plugins": ["istanbul"]
+      }
+    }
+}

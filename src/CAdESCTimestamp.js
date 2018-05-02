@@ -2,10 +2,10 @@ import * as asn1js from "asn1js";
 import { getParametersValue, utilConcatBuf } from "pvutils";
 import { getCrypto } from "pkijs/src/common";
 import ContentInfo from "pkijs/src/ContentInfo";
-import SignedData from "pkijs/src/SignedData";
 import Attribute from "pkijs/src/Attribute";
 import TimeStampResp from "pkijs/src/TimeStampResp";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class CAdESCTimestamp extends ContentInfo
 {
 	//**********************************************************************************
@@ -25,6 +25,7 @@ export default class CAdESCTimestamp extends ContentInfo
 		this.tspResponse = getParametersValue(parameters, "tspResponse", new ArrayBuffer(0));
 	}
 	//**********************************************************************************
+	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Get "ArrayBuffer" to transfer to time-stamp server
 	 * @param {SignedData} cmsSignedData CMS Signed Data to make attribute for
@@ -57,17 +58,17 @@ export default class CAdESCTimestamp extends ContentInfo
 			hashAlgorithm = parameters.hashAlgorithm;
 		
 		if("signatureTimeStamp" in parameters)
-			signatureTimeStamp = parameters.signature_time_stamp;
+			signatureTimeStamp = parameters.signatureTimeStamp;
 		else
 			return Promise.reject("Parameter \"signatureTimeStamp\" is mandatory for making \"CAdES-C-Timestamp\" attribute");
 		
 		if("completeCertificateReferences" in parameters)
-			completeCertificateReferences = parameters.signature_time_stamp;
+			completeCertificateReferences = parameters.completeCertificateReferences;
 		else
 			return Promise.reject("Parameter \"completeCertificateReferences\" is mandatory for making \"CAdES-C-Timestamp\" attribute");
 		
 		if("completeRevocationReferences" in parameters)
-			completeRevocationReferences = parameters.signature_time_stamp;
+			completeRevocationReferences = parameters.completeRevocationReferences;
 		else
 			return Promise.reject("Parameter \"completeRevocationReferences\" is mandatory for making \"CAdES-C-Timestamp\" attribute");
 		//endregion

@@ -1,8 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import IssuerSerial from "cadesjs/src/IssuerSerial";
-import OtherHashAlgAndValue from "cadesjs/src/OtherHashAlgAndValue";
+import IssuerSerial from "./IssuerSerial";
+import OtherHashAlgAndValue from "./OtherHashAlgAndValue";
 import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
 import GeneralNames from "pkijs/src/GeneralNames";
 import GeneralName from "pkijs/src/GeneralName";
@@ -250,7 +250,7 @@ export default class OtherCertID
 		
 		//region Create all remaining attributes
 		sequence = sequence.then(
-			result => crypto.digest({ name: hashAlgorithm }, certificate.toSchema().toBER(false)),
+			() => crypto.digest({ name: hashAlgorithm }, certificate.toSchema().toBER(false)),
 			error => Promise.reject(error)
 		).then(
 			result => {

@@ -1,6 +1,7 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
 //**************************************************************************************
+// noinspection JSUnusedGlobalSymbols
 export default class ContentHints
 {
 	//**********************************************************************************
@@ -121,6 +122,7 @@ export default class ContentHints
 		if("contentDescription" in asn1.result)
 			this.contentDescription = asn1.result.contentDescription.valueBlock.value;
 		
+		// noinspection JSUnusedGlobalSymbols
 		this.contentType = asn1.result.contentType.valueBlock.toString();
 		//endregion
 	}

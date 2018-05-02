@@ -1,0 +1,9 @@
+.idea
+/examples
+/test
+circle.yml
+.nycrc
+.nyc_output
+.eslintrc.js
+.babelrc
+coverage

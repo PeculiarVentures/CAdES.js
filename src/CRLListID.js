@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import CrlValidatedID from "cadesjs/src/CrlValidatedID";
+import CrlValidatedID from "./CrlValidatedID";
 //**************************************************************************************
 export default class CRLListID
 {
