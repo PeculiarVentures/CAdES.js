@@ -28,11 +28,7 @@ import {
 	GeneralName,
 	Attribute
 } from "pkijs";
-import ESSCertIDv2 from "../../src/ESSCertIDv2.js";
-import SigningCertificateV2 from "../../src/SigningCertificateV2.js";
-import ATSHashIndex from "../../src/ATSHashIndex.js";
-import { createCommonAttributes } from "../../src/common.js";
-import ArchiveTimeStampV3 from "../../src/ArchiveTimeStampV3.js";
+import { ESSCertIDv2, SigningCertificateV2, ATSHashIndex, createCommonAttributes, ArchiveTimeStampV3 } from "../../src/index.js";
 //<nodewebcryptoossl>
 //*********************************************************************************
 const validCertificates = [
