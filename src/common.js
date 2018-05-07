@@ -1,9 +1,8 @@
 import * as asn1js from "asn1js";
 import { utilConcatBuf, getUTCDate } from "pvutils";
-import { getCrypto } from "pkijs/src/common";
-import ESSCertIDv2 from "./ESSCertIDv2";
-import Attribute from "pkijs/src/Attribute";
-import SigningCertificateV2 from "./SigningCertificateV2";
+import { getCrypto, Attribute } from "pkijs";
+import ESSCertIDv2 from "./ESSCertIDv2.js";
+import SigningCertificateV2 from "./SigningCertificateV2.js";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 /**

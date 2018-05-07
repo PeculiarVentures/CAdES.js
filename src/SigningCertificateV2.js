@@ -1,7 +1,7 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import ESSCertIDv2 from "./ESSCertIDv2";
-import PolicyInformation from "pkijs/src/PolicyInformation";
+import { PolicyInformation } from "pkijs";
+import ESSCertIDv2 from "./ESSCertIDv2.js";
 //**************************************************************************************
 export default class SigningCertificateV2
 {

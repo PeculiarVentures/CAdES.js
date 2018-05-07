@@ -1,9 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import OcspIdentifier from "./OcspIdentifier";
-import OtherHashAlgAndValue from "./OtherHashAlgAndValue";
-import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
+import { getCrypto, getOIDByAlgorithm, AlgorithmIdentifier } from "pkijs";
+import OcspIdentifier from "./OcspIdentifier.js";
+import OtherHashAlgAndValue from "./OtherHashAlgAndValue.js";
 //**************************************************************************************
 export default class OcspResponsesID
 {

@@ -1,9 +1,11 @@
 import * as asn1js from "asn1js";
 import { getParametersValue, utilConcatBuf } from "pvutils";
-import { getCrypto } from "pkijs/src/common";
-import ContentInfo from "pkijs/src/ContentInfo";
-import Attribute from "pkijs/src/Attribute";
-import TimeStampResp from "pkijs/src/TimeStampResp";
+import {
+	getCrypto,
+	ContentInfo,
+	Attribute,
+	TimeStampResp
+} from "pkijs";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class CAdESCTimestamp extends ContentInfo

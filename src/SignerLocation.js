@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import DirectoryString from "./DirectoryString";
+import DirectoryString from "./DirectoryString.js";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class SignerLocation

@@ -1,10 +1,10 @@
-import CompleteRevocationRefs from "./CompleteRevocationRefs";
-import CrlValidatedID from "./CrlValidatedID";
-import OcspResponsesID from "./OcspResponsesID";
-import CrlOcspRef from "./CrlOcspRef";
-import CRLListID from "./CRLListID";
-import OcspListID from "./OcspListID";
-import Attribute from "pkijs/src/Attribute";
+import { Attribute } from "pkijs";
+import CompleteRevocationRefs from "./CompleteRevocationRefs.js";
+import CrlValidatedID from "./CrlValidatedID.js";
+import OcspResponsesID from "./OcspResponsesID.js";
+import CrlOcspRef from "./CrlOcspRef.js";
+import CRLListID from "./CRLListID.js";
+import OcspListID from "./OcspListID.js";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class CompleteRevocationReferences extends CompleteRevocationRefs

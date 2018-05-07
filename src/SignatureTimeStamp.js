@@ -1,11 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import { getCrypto } from "pkijs/src/common";
-import ContentInfo from "pkijs/src/ContentInfo";
-import TSTInfo from "pkijs/src/TSTInfo";
-import SignedData from "pkijs/src/SignedData";
-import Attribute from "pkijs/src/Attribute";
-import TimeStampResp from "pkijs/src/TimeStampResp";
+import { getCrypto, ContentInfo, TSTInfo, SignedData, Attribute, TimeStampResp } from "pkijs";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class SignatureTimeStamp extends ContentInfo

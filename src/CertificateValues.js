@@ -1,7 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import Certificate from "pkijs/src/Certificate";
-import Attribute from "pkijs/src/Attribute";
+import { Certificate, Attribute } from "pkijs";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class CertificateValues

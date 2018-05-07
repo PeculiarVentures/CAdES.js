@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import GeneralNames from "pkijs/src/GeneralNames";
+import { GeneralNames } from "pkijs";
 //**************************************************************************************
 export default class IssuerSerial
 {

@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import OtherCertID from "./OtherCertID";
+import OtherCertID from "./OtherCertID.js";
 //**************************************************************************************
 export default class CompleteCertificateRefs
 {

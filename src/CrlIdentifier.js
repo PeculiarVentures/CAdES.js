@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import RelativeDistinguishedNames from "pkijs/src/RelativeDistinguishedNames";
+import { RelativeDistinguishedNames } from "pkijs";
 //**************************************************************************************
 export default class CrlIdentifier
 {

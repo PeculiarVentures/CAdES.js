@@ -1,7 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import RelativeDistinguishedNames from "pkijs/src/RelativeDistinguishedNames";
-import BasicOCSPResponse from "pkijs/src/BasicOCSPResponse";
+import { RelativeDistinguishedNames, BasicOCSPResponse } from "pkijs";
 //**************************************************************************************
 export default class OcspIdentifier
 {

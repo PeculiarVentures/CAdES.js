@@ -1,10 +1,7 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
-import IssuerSerial from "./IssuerSerial";
-import GeneralNames from "pkijs/src/GeneralNames";
-import GeneralName from "pkijs/src/GeneralName";
+import { getCrypto, getOIDByAlgorithm, AlgorithmIdentifier, GeneralNames, GeneralName } from "pkijs";
+import IssuerSerial from "./IssuerSerial.js";
 //**************************************************************************************
 export default class ESSCertIDv2
 {

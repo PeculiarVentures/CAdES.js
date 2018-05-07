@@ -1,6 +1,7 @@
 .idea
 **/node_modules
 **/package-lock.json
+**/bundle.js
 build
 .nyc_output
 coverage

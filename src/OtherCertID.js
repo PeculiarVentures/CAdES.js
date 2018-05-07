@@ -1,11 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import IssuerSerial from "./IssuerSerial";
-import OtherHashAlgAndValue from "./OtherHashAlgAndValue";
-import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
-import GeneralNames from "pkijs/src/GeneralNames";
-import GeneralName from "pkijs/src/GeneralName";
+import { getCrypto, getOIDByAlgorithm, AlgorithmIdentifier, GeneralNames, GeneralName } from "pkijs";
+import IssuerSerial from "./IssuerSerial.js";
+import OtherHashAlgAndValue from "./OtherHashAlgAndValue.js";
 //**************************************************************************************
 export default class OtherCertID
 {

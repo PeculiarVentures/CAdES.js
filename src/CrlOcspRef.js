@@ -1,8 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import CRLListID from "./CRLListID";
-import OcspListID from "./OcspListID";
-import OtherRevRefs from "./OtherRevRefs";
+import CRLListID from "./CRLListID.js";
+import OcspListID from "./OcspListID.js";
+import OtherRevRefs from "./OtherRevRefs.js";
 //**************************************************************************************
 export default class CrlOcspRef
 {

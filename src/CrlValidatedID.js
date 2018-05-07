@@ -1,9 +1,8 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import OtherHashAlgAndValue from "./OtherHashAlgAndValue";
-import CrlIdentifier from "./CrlIdentifier";
-import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
+import { getCrypto, getOIDByAlgorithm, AlgorithmIdentifier } from "pkijs";
+import OtherHashAlgAndValue from "./OtherHashAlgAndValue.js";
+import CrlIdentifier from "./CrlIdentifier.js";
 //**************************************************************************************
 export default class CrlValidatedID
 {

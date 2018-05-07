@@ -1,7 +1,7 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import OtherCertID from "./OtherCertID";
-import PolicyInformation from "pkijs/src/PolicyInformation";
+import { PolicyInformation } from "pkijs";
+import OtherCertID from "./OtherCertID.js";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class OtherSigningCertificate

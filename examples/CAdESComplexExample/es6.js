@@ -1,34 +1,38 @@
 /* eslint-disable no-undef,no-unreachable */
 import * as asn1js from "asn1js";
-import { getUTCDate, stringToArrayBuffer, utilConcatBuf, arrayBufferToString } from "pvutils";
-import { getCrypto, getAlgorithmParameters } from "pkijs/src/common.js";
-import OCSPResponse from "pkijs/src/OCSPResponse.js";
-import OCSPRequest from "pkijs/src/OCSPRequest.js";
-import SingleResponse from "pkijs/src/SingleResponse.js";
-import ResponseData from "pkijs/src/ResponseData.js";
-import BasicOCSPResponse from "pkijs/src/BasicOCSPResponse.js";
-import Certificate from "pkijs/src/Certificate.js";
-import ResponseBytes from "pkijs/src/ResponseBytes.js";
+import { getUTCDate, stringToArrayBuffer, utilConcatBuf, arrayBufferToString, toBase64 } from "pvutils";
+import {
+	getCrypto,
+	getAlgorithmParameters,
+	setEngine,
+	OCSPResponse,
+	OCSPRequest,
+	SingleResponse,
+	ResponseData,
+	BasicOCSPResponse,
+	Certificate,
+	ResponseBytes,
+	SignerInfo,
+	SignedData,
+	EncapsulatedContentInfo,
+	ContentInfo,
+	TimeStampResp,
+	TimeStampReq,
+	MessageImprint,
+	AlgorithmIdentifier,
+	PKIStatusInfo,
+	IssuerAndSerialNumber,
+	SignedAndUnsignedAttributes,
+	TSTInfo,
+	OtherRevocationInfoFormat,
+	GeneralName,
+	Attribute
+} from "pkijs";
 import ESSCertIDv2 from "../../src/ESSCertIDv2.js";
 import SigningCertificateV2 from "../../src/SigningCertificateV2.js";
 import ATSHashIndex from "../../src/ATSHashIndex.js";
 import { createCommonAttributes } from "../../src/common.js";
 import ArchiveTimeStampV3 from "../../src/ArchiveTimeStampV3.js";
-import SignerInfo from "pkijs/src/SignerInfo.js";
-import SignedData from "pkijs/src/SignedData.js";
-import EncapsulatedContentInfo from "pkijs/src/EncapsulatedContentInfo.js";
-import ContentInfo from "pkijs/src/ContentInfo.js";
-import TimeStampResp from "pkijs/src/TimeStampResp.js";
-import TimeStampReq from "pkijs/src/TimeStampReq.js";
-import MessageImprint from "pkijs/src/MessageImprint.js";
-import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier.js";
-import PKIStatusInfo from "pkijs/src/PKIStatusInfo.js";
-import IssuerAndSerialNumber from "pkijs/src/IssuerAndSerialNumber.js";
-import SignedAndUnsignedAttributes from "pkijs/src/SignedAndUnsignedAttributes.js";
-import TSTInfo from "pkijs/src/TSTInfo.js";
-import OtherRevocationInfoFormat from "pkijs/src/OtherRevocationInfoFormat.js";
-import GeneralName from "pkijs/src/GeneralName.js";
-import Attribute from "pkijs/src/Attribute.js";
 //<nodewebcryptoossl>
 //*********************************************************************************
 const validCertificates = [
@@ -621,7 +625,7 @@ function getTSPResponse(request)
 	return sequence;
 }
 //*********************************************************************************
-function makeCAdES()
+function makeCAdESAv3Internal()
 {
 	//region Initial variables
 	let sequence = Promise.resolve();
@@ -664,7 +668,7 @@ function makeCAdES()
 		userPublicKey = result;
 		
 		return crypto.importKey("pkcs8",
-			stringToArrayBuffer(window.atob(User10key)),
+			stringToArrayBuffer(atob(User10key)),
 			{
 				name: result.algorithm.name,
 				hash: result.algorithm.hash || {}
@@ -677,7 +681,7 @@ function makeCAdES()
 	{
 		userPrivateKey = result;
 		
-		cmsSignedSimpl = SignedData({
+		cmsSignedSimpl = new SignedData({
 			version: 1,
 			encapContentInfo: new EncapsulatedContentInfo({
 				eContentType: "1.2.840.113549.1.7.1" // "data" content type
@@ -704,7 +708,7 @@ function makeCAdES()
 	}).then(result =>
 	{
 		if(("signedAttrs" in cmsSignedSimpl.signerInfos[0]) === false)
-			cmsSignedSimpl.signerInfos[0].signedAttrs = new SignedAndUnsignedAttributes();
+			cmsSignedSimpl.signerInfos[0].signedAttrs = new SignedAndUnsignedAttributes({ type: 0 });
 		
 		for(let i = 0; i < result.length; i++)
 			cmsSignedSimpl.signerInfos[0].signedAttrs.attributes.push(result[i]);
@@ -775,22 +779,56 @@ function makeCAdES()
 			tspResponse: result
 		}));
 		
-		const cms_content_simp = new ContentInfo({
+		const cmsContent = new ContentInfo({
 			contentType: "1.2.840.113549.1.7.2",
 			content: cmsSignedSimpl.toSchema(true)
 		});
 		
+		return cmsContent.toSchema().toBER(false);
+	});
+	
+	return sequence;
+}
+//*********************************************************************************
+function makeCAdESAv3()
+{
+	return makeCAdESAv3Internal().then(result =>
+	{
 		// noinspection InnerHTMLJS
-		let result_string = document.getElementById("new_data").innerHTML;
-		
-		result_string += "-----BEGIN CMS-----\r\n";
-		result_string += formatPEM(window.btoa(arrayBufferToString(cms_content_simp.toSchema().toBER(false))));
+		let result_string = "-----BEGIN CMS-----\r\n";
+		result_string += formatPEM(window.btoa(arrayBufferToString(result)));
 		result_string += "\r\n-----END CMS-----\r\n\r\n";
 		
 		// noinspection InnerHTMLJS
 		document.getElementById("new_data").innerHTML = result_string;
 	});
-	
-	return sequence;
 }
+//*********************************************************************************
+function makeCAdESInternal()
+{
+}
+//*********************************************************************************
+function makeCAdES()
+{
+	return makeCAdESInternal();
+}
+//*********************************************************************************
+context("Hack for Rollup.js", () =>
+{
+	return;
+	
+	// noinspection UnreachableCodeJS
+	makeCAdESAv3();
+	makeCAdES();
+	setEngine();
+});
+//*********************************************************************************
+context("CAdES Complex Example", () =>
+{
+	it("Making CAdES-A v3 Data", () => makeCAdESAv3Internal().then(result =>
+	{
+		console.log(`CAdES-A v3 Data: ${toBase64(arrayBufferToString(result))}`);
+	}));
+	it("Making Simple CAdES Data", () => makeCAdESInternal());
+});
 //*********************************************************************************

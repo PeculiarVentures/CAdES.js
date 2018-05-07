@@ -1,6 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import NoticeReference from "./NoticeReference";
+import NoticeReference from "./NoticeReference.js";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class SPUserNotice

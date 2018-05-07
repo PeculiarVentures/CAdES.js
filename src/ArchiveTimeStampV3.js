@@ -1,13 +1,7 @@
 import * as asn1js from "asn1js";
 import { getParametersValue, utilConcatBuf } from "pvutils";
-import { getCrypto } from "pkijs/src/common";
-import ContentInfo from "pkijs/src/ContentInfo";
-import ATSHashIndex from "./ATSHashIndex";
-import SignedData from "pkijs/src/SignedData";
-import IssuerAndSerialNumber from "pkijs/src/IssuerAndSerialNumber";
-import Attribute from "pkijs/src/Attribute";
-import TimeStampResp from "pkijs/src/TimeStampResp";
-import SignedUnsignedAttributes from "pkijs/src/SignedAndUnsignedAttributes";
+import { getCrypto, ContentInfo, SignedData, IssuerAndSerialNumber, Attribute, TimeStampResp, SignedAndUnsignedAttributes } from "pkijs";
+import ATSHashIndex from "./ATSHashIndex.js";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class ArchiveTimeStampV3 extends ContentInfo
@@ -258,7 +252,7 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 		//region Append "ATSHashIndex" into local unsigned attributes
 		const cmsSignedData = new SignedData({ schema: this.content });
 		
-		cmsSignedData.signerInfos[0].unsignedAttrs = new SignedUnsignedAttributes({
+		cmsSignedData.signerInfos[0].unsignedAttrs = new SignedAndUnsignedAttributes({
 			type: 1, // UnsignedAttributes
 			attributes: [
 				this.aTSHashIndex.makeAttribute()

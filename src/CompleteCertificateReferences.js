@@ -1,6 +1,6 @@
-import CompleteCertificateRefs from "./CompleteCertificateRefs";
-import OtherCertID from "./OtherCertID";
-import Attribute from "pkijs/src/Attribute";
+import { Attribute } from "pkijs";
+import CompleteCertificateRefs from "./CompleteCertificateRefs.js";
+import OtherCertID from "./OtherCertID.js";
 //**************************************************************************************
 // noinspection JSUnusedGlobalSymbols
 export default class CompleteCertificateReferences extends CompleteCertificateRefs

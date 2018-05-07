@@ -1,10 +1,6 @@
 import * as asn1js from "asn1js";
 import { getParametersValue } from "pvutils";
-import { getCrypto, getOIDByAlgorithm } from "pkijs/src/common";
-import AlgorithmIdentifier from "pkijs/src/AlgorithmIdentifier";
-import OtherCertificateFormat from "pkijs/src/OtherCertificateFormat";
-import OtherRevocationInfoFormat from "pkijs/src/OtherRevocationInfoFormat";
-import Attribute from "pkijs/src/Attribute";
+import { getCrypto, getOIDByAlgorithm, AlgorithmIdentifier, OtherCertificateFormat, OtherRevocationInfoFormat, Attribute } from "pkijs";
 //**************************************************************************************
 export default class ATSHashIndex
 {
