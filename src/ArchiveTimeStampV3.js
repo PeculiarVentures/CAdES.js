@@ -76,6 +76,53 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 		}
 	}
 	//**********************************************************************************
+	/**
+	 * Convert parsed asn1js object into current class
+	 * @param {!Object} schema
+	 * @param {boolean} [initValues=true]
+	 */
+	fromSchema(schema, initValues = true)
+	{
+		super.fromSchema(schema);
+		
+		if(initValues)
+		{
+			if(this.contentType !== "1.2.840.113549.1.7.2")
+				throw new Error("Incorrect object schema for archive-time-stamp-v3 attribute: incorrect content type");
+			
+			this.tspResponse = new TimeStampResp({ timeStampToken: schema });
+			
+			const cmsSignedData = new SignedData({ schema: this.content });
+			
+			if(cmsSignedData.signerInfos.length !== 1)
+				throw new Error("Incorrect object schema for archive-time-stamp-v3 attribute: incorrect signerInfos length");
+			
+			if(("unsignedAttrs" in cmsSignedData.signerInfos[0]) === false)
+				throw new Error("Incorrect object schema for archive-time-stamp-v3 attribute: missing unsignedAttrs");
+			
+			if(cmsSignedData.signerInfos[0].unsignedAttrs.attributes.length !== 1)
+				throw new Error("Incorrect object schema for archive-time-stamp-v3 attribute: incorrect unsignedAttrs length");
+			
+			const attribute = new Attribute(cmsSignedData.signerInfos[0].unsignedAttrs.attributes[0]);
+			
+			if(attribute.type !== "0.4.0.1733.2.5")
+				throw new Error("Incorrect object schema for archive-time-stamp-v3 attribute: incorrect type for aTSHashIndex value");
+			
+			let parsedValue;
+			
+			try
+			{
+				parsedValue = new ATSHashIndex({ schema: attribute.values[0] });
+			}
+			catch(e)
+			{
+				throw new Error("Incorrect object schema for archive-time-stamp-v3 attribute: incorrect aTSHashIndex value");
+			}
+			
+			this.aTSHashIndex = parsedValue;
+		}
+	}
+	//**********************************************************************************
 	// noinspection JSUnusedGlobalSymbols
 	/**
 	 * Get "ArrayBuffer" to transfer to time-stamp server
@@ -244,7 +291,7 @@ export default class ArchiveTimeStampV3 extends ContentInfo
 		
 		//region Initialize internal variables from "tspResponse"
 		if("timeStampToken" in tspResponse)
-			this.fromSchema(tspResponse.timeStampToken.toSchema());
+			this.fromSchema(tspResponse.timeStampToken.toSchema(), false);
 		else
 			throw new Error("No neccessary \"timeStampToken\" inside \"tspResponse\"");
 		//endregion

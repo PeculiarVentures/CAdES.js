@@ -1,6 +1,6 @@
 /* eslint-disable no-undef,no-unreachable */
 import * as asn1js from "asn1js";
-import { getUTCDate, stringToArrayBuffer, utilConcatBuf, arrayBufferToString, toBase64 } from "pvutils";
+import { getUTCDate, stringToArrayBuffer, utilConcatBuf, arrayBufferToString, toBase64, bufferToHexCodes } from "pvutils";
 import {
 	getCrypto,
 	getAlgorithmParameters,
@@ -26,9 +26,22 @@ import {
 	TSTInfo,
 	OtherRevocationInfoFormat,
 	GeneralName,
-	Attribute
-} from "pkijs";
-import { ESSCertIDv2, SigningCertificateV2, ATSHashIndex, createCommonAttributes, ArchiveTimeStampV3 } from "../../src/index.js";
+	Attribute,
+	CertificateRevocationList } from "pkijs";
+import {
+	ESSCertIDv2,
+	SigningCertificateV2,
+	ATSHashIndex,
+	createCommonAttributes,
+	ArchiveTimeStampV3,
+	SignatureTimeStamp,
+	CAdESCTimestamp,
+	CompleteCertificateReferences,
+	CompleteRevocationReferences,
+	CrlOcspRef,
+	CertificateValues,
+	RevocationValues,
+	AttributeCAdES } from "../../src/index.js";
 //<nodewebcryptoossl>
 //*********************************************************************************
 const validCertificates = [
@@ -41,6 +54,8 @@ const validCertificates = [
 const invalidCertificates = [
 	11 // End-user certificate #2
 ];
+
+let cmsSignedBuffer = new ArrayBuffer(0);
 
 //region Pre-defined constants
 const CAcert = "MIIDRDCCAi6gAwIBAgIBATALBgkqhkiG9w0BAQUwODE2MAkGA1UEBhMCVVMwKQYD\
@@ -611,7 +626,7 @@ function getTSPResponse(request)
 			}),
 			timeStampToken: new ContentInfo({
 				contentType: "1.2.840.113549.1.7.2",
-				content: cmsSignedSimpl.toSchema(true)
+				content: cmsSignedSimpl.toSchema(false)
 			})
 		});
 		
@@ -619,6 +634,170 @@ function getTSPResponse(request)
 	});
 	
 	return sequence;
+}
+//*********************************************************************************
+function parseCMSSigned()
+{
+	//region Initial check
+	if(cmsSignedBuffer.byteLength === 0)
+	{
+		alert("Nothing to parse!");
+		return;
+	}
+	//endregion
+	
+	//region Initial activities
+	// noinspection InnerHTMLJS
+	document.getElementById("cms-dgst-algos").innerHTML = "";
+	
+	document.getElementById("cms-certs").style.display = "none";
+	document.getElementById("cms-crls").style.display = "none";
+	
+	const certificatesTable = document.getElementById("cms-certificates");
+	while(certificatesTable.rows.length > 1)
+		certificatesTable.deleteRow(certificatesTable.rows.length - 1);
+	
+	const crlsTable = document.getElementById("cms-rev-lists");
+	while(crlsTable.rows.length > 1)
+		crlsTable.deleteRow(crlsTable.rows.length - 1);
+	//endregion
+	
+	//region Decode existing CMS Signed Data
+	const asn1 = asn1js.fromBER(cmsSignedBuffer);
+	const cmsContentSimpl = new ContentInfo({ schema: asn1.result });
+	const cmsSignedSimpl = new SignedData({ schema: cmsContentSimpl.content });
+	
+	for(const signerInfo of cmsSignedSimpl.signerInfos)
+	{
+		if("signedAttrs" in signerInfo)
+			signerInfo.signedAttrs.attributes = Array.from(signerInfo.signedAttrs.attributes, element => new AttributeCAdES(element));
+		
+		if("unsignedAttrs" in signerInfo)
+			signerInfo.unsignedAttrs.attributes = Array.from(signerInfo.unsignedAttrs.attributes, element => new AttributeCAdES(element));
+	}
+	//endregion
+	
+	//region Put information about digest algorithms in the CMS Signed Data
+	const dgstmap = {
+		"1.3.14.3.2.26": "SHA-1",
+		"2.16.840.1.101.3.4.2.1": "SHA-256",
+		"2.16.840.1.101.3.4.2.2": "SHA-384",
+		"2.16.840.1.101.3.4.2.3": "SHA-512"
+	};
+	
+	for(let i = 0; i < cmsSignedSimpl.digestAlgorithms.length; i++)
+	{
+		let typeval = dgstmap[cmsSignedSimpl.digestAlgorithms[i].algorithmId];
+		if(typeof typeval === "undefined")
+			typeval = cmsSignedSimpl.digestAlgorithms[i].algorithmId;
+		
+		const ulrow = `<li><p><span>${typeval}</span></p></li>`;
+		
+		// noinspection InnerHTMLJS
+		document.getElementById("cms-dgst-algos").innerHTML = document.getElementById("cms-dgst-algos").innerHTML + ulrow;
+	}
+	//endregion
+	
+	//region Put information about encapsulated content type
+	const contypemap = {
+		"1.3.6.1.4.1.311.2.1.4": "Authenticode signing information",
+		"1.2.840.113549.1.7.1": "Data content"
+	};
+	
+	let eContentType = contypemap[cmsSignedSimpl.encapContentInfo.eContentType];
+	if(typeof eContentType === "undefined")
+		eContentType = cmsSignedSimpl.encapContentInfo.eContentType;
+	
+	// noinspection InnerHTMLJS
+	document.getElementById("cms-encap-type").innerHTML = eContentType;
+	//endregion
+	
+	//region Put information about included certificates
+	const rdnmap = {
+		"2.5.4.6": "C",
+		"2.5.4.10": "O",
+		"2.5.4.11": "OU",
+		"2.5.4.3": "CN",
+		"2.5.4.7": "L",
+		"2.5.4.8": "S",
+		"2.5.4.12": "T",
+		"2.5.4.42": "GN",
+		"2.5.4.43": "I",
+		"2.5.4.4": "SN",
+		"1.2.840.113549.1.9.1": "E-mail"
+	};
+	
+	if("certificates" in cmsSignedSimpl)
+	{
+		for(let j = 0; j < cmsSignedSimpl.certificates.length; j++)
+		{
+			let ul = "<ul>";
+			
+			for(let i = 0; i < cmsSignedSimpl.certificates[j].issuer.typesAndValues.length; i++)
+			{
+				let typeval = rdnmap[cmsSignedSimpl.certificates[j].issuer.typesAndValues[i].type];
+				if(typeof typeval === "undefined")
+					typeval = cmsSignedSimpl.certificates[j].issuer.typesAndValues[i].type;
+				
+				const subjval = cmsSignedSimpl.certificates[j].issuer.typesAndValues[i].value.valueBlock.value;
+				
+				ul += `<li><p><span>${typeval}</span> ${subjval}</p></li>`;
+			}
+			
+			ul = `${ul}</ul>`;
+			
+			const row = certificatesTable.insertRow(certificatesTable.rows.length);
+			const cell0 = row.insertCell(0);
+			// noinspection InnerHTMLJS
+			cell0.innerHTML = bufferToHexCodes(cmsSignedSimpl.certificates[j].serialNumber.valueBlock.valueHex);
+			const cell1 = row.insertCell(1);
+			// noinspection InnerHTMLJS
+			cell1.innerHTML = ul;
+		}
+		
+		document.getElementById("cms-certs").style.display = "block";
+	}
+	//endregion
+	
+	//region Put information about included CRLs
+	if("crls" in cmsSignedSimpl)
+	{
+		for(let j = 0; j < cmsSignedSimpl.crls.length; j++)
+		{
+			if(typeof cmsSignedSimpl.crls[j] !== CertificateRevocationList)
+				continue;
+			
+			let ul = "<ul>";
+			
+			for(let i = 0; i < cmsSignedSimpl.crls[j].issuer.typesAndValues.length; i++)
+			{
+				let typeval = rdnmap[cmsSignedSimpl.crls[j].issuer.typesAndValues[i].type];
+				if(typeof typeval === "undefined")
+					typeval = cmsSignedSimpl.crls[j].issuer.typesAndValues[i].type;
+				
+				const subjval = cmsSignedSimpl.crls[j].issuer.typesAndValues[i].value.valueBlock.value;
+				
+				ul += `<li><p><span>${typeval}</span> ${subjval}</p></li>`;
+			}
+			
+			ul = `${ul}</ul>`;
+			
+			const row = crlsTable.insertRow(certificatesTable.rows.length);
+			const cell = row.insertCell(0);
+			// noinspection InnerHTMLJS
+			cell.innerHTML = ul;
+		}
+		
+		document.getElementById("cms-certs").style.display = "block";
+	}
+	//endregion
+	
+	//region Put information about number of signers
+	// noinspection InnerHTMLJS
+	document.getElementById("cms-signs").innerHTML = cmsSignedSimpl.signerInfos.length.toString();
+	//endregion
+	
+	document.getElementById("cms-signed-data-block").style.display = "block";
 }
 //*********************************************************************************
 function makeCAdESAv3Internal()
@@ -771,16 +950,18 @@ function makeCAdESAv3Internal()
 			aTSHashIndex: aTSHashIndex
 		});
 		
-		cmsSignedSimpl.signerInfos[0].unsignedAttrs.attributes.push(archiveTimeStampV3.makeAttribute({
+		const av3Attribute = archiveTimeStampV3.makeAttribute({
 			tspResponse: result
-		}));
+		});
+		
+		cmsSignedSimpl.signerInfos[0].unsignedAttrs.attributes.push(av3Attribute);
 		
 		const cmsContent = new ContentInfo({
 			contentType: "1.2.840.113549.1.7.2",
 			content: cmsSignedSimpl.toSchema(true)
 		});
 		
-		return cmsContent.toSchema().toBER(false);
+		cmsSignedBuffer = cmsContent.toSchema().toBER(false);
 	});
 	
 	return sequence;
@@ -788,25 +969,279 @@ function makeCAdESAv3Internal()
 //*********************************************************************************
 function makeCAdESAv3()
 {
-	return makeCAdESAv3Internal().then(result =>
+	return makeCAdESAv3Internal().then(() =>
 	{
 		// noinspection InnerHTMLJS
-		let result_string = "-----BEGIN CMS-----\r\n";
-		result_string += formatPEM(window.btoa(arrayBufferToString(result)));
-		result_string += "\r\n-----END CMS-----\r\n\r\n";
+		let resultString = "-----BEGIN CMS-----\r\n";
+		resultString += formatPEM(window.btoa(arrayBufferToString(cmsSignedBuffer)));
+		resultString += "\r\n-----END CMS-----\r\n\r\n";
 		
 		// noinspection InnerHTMLJS
-		document.getElementById("new_data").innerHTML = result_string;
+		document.getElementById("new_data").innerHTML = resultString;
+		
+		parseCMSSigned();
 	});
 }
 //*********************************************************************************
-function makeCAdESInternal()
+function makeCAdESXLInternal()
 {
+	//region Initial variables
+	let sequence = Promise.resolve();
+	
+	let userPublicKey;
+	let userPrivateKey;
+	
+	const dataBuffer = new ArrayBuffer(6);
+	const dataView = new Uint8Array(dataBuffer);
+	dataView[0] = 0x00;
+	dataView[1] = 0x01;
+	dataView[2] = 0x02;
+	dataView[3] = 0x03;
+	dataView[4] = 0x04;
+	dataView[5] = 0x05;
+	
+	let cmsSignedSimpl;
+
+	const signatureTimeStamp = new SignatureTimeStamp();
+	const cadesCTimeStamp = new CAdESCTimestamp();
+	
+	const completeCertificateReferences = new CompleteCertificateReferences();
+	const completeRevocationReferences = new CompleteRevocationReferences();
+	
+	const ocspRequest = new OCSPRequest();
+	
+	let ocspResponse;
+	
+	let asn1 = asn1js.fromBER(stringToArrayBuffer(atob(User10cert)));
+	const certSimpl = new Certificate({ schema: asn1.result });
+	
+	asn1 = asn1js.fromBER(stringToArrayBuffer(atob(CAcert)));
+	const caCertSimpl = new Certificate({ schema: asn1.result });
+	//endregion
+	
+	//region Get a "crypto" extension
+	const crypto = getCrypto();
+	if(typeof crypto === "undefined")
+		return Promise.reject("No WebCrypto extension found");
+	//endregion
+	
+	
+	sequence = sequence.then(() => certSimpl.getPublicKey());
+	
+	sequence = sequence.then(result =>
+	{
+		userPublicKey = result;
+		
+		return crypto.importKey("pkcs8",
+			stringToArrayBuffer(atob(User10key)),
+			{
+				name: result.algorithm.name,
+				hash: result.algorithm.hash || {}
+			},
+			true,
+			["sign"]);
+	});
+	
+	sequence = sequence.then(result =>
+	{
+		userPrivateKey = result;
+		
+		cmsSignedSimpl = new SignedData({
+			version: 1,
+			encapContentInfo: new EncapsulatedContentInfo({
+				eContentType: "1.2.840.113549.1.7.1" // "data" content type
+			}),
+			signerInfos: [
+				new SignerInfo({
+					version: 1,
+					sid: new IssuerAndSerialNumber({
+						issuer: certSimpl.issuer,
+						serialNumber: certSimpl.serialNumber
+					})
+				})
+			],
+			certificates: [certSimpl]
+		});
+		
+		cmsSignedSimpl.encapContentInfo.eContent = new asn1js.OctetString({ valueHex: dataBuffer });
+		
+		return createCommonAttributes(cmsSignedSimpl, {
+			hashAlgorithm: "SHA-1",
+			certificate: certSimpl,
+			contentOID: "1.2.840.113549.1.7.1" // "data" content type
+		});
+	}).then(result =>
+	{
+		if(("signedAttrs" in cmsSignedSimpl.signerInfos[0]) === false)
+			cmsSignedSimpl.signerInfos[0].signedAttrs = new SignedAndUnsignedAttributes({ type: 0 });
+		
+		for(let i = 0; i < result.length; i++)
+			cmsSignedSimpl.signerInfos[0].signedAttrs.attributes.push(result[i]);
+	});
+	
+	sequence = sequence.then(() => cmsSignedSimpl.sign(userPrivateKey, 0, userPublicKey.algorithm.hash.name || {}));
+	
+	sequence = sequence.then(() => signatureTimeStamp.getStampingBuffer(cmsSignedSimpl, 0, { hashAlgorithm: "SHA-1" }))
+		.then(result =>
+		{
+			return getTSPResponse(new TimeStampReq({
+				version: 1,
+				messageImprint: new MessageImprint({
+					hashAlgorithm: new AlgorithmIdentifier({
+						algorithmId: "1.3.14.3.2.26",
+						algorithmParams: new asn1js.Null()
+					}),
+					hashedMessage: new asn1js.OctetString({ valueHex: result })
+				})
+			}));
+		})
+		.then(result =>
+		{
+			if(("unsignedAttrs" in cmsSignedSimpl.signerInfos[0]) === false)
+			{
+				cmsSignedSimpl.signerInfos[0].unsignedAttrs = new SignedAndUnsignedAttributes({
+					type: 1 // UnsignedAttributes
+				});
+			}
+			
+			cmsSignedSimpl.signerInfos[0].unsignedAttrs.attributes.push(signatureTimeStamp.makeAttribute({ tspResponse: result }));
+		});
+	
+	sequence = sequence.then(() => ocspRequest.createForCertificate(certSimpl, {
+		hashAlgorithm: "SHA-1",
+		issuerCertificate: caCertSimpl
+	})).then(() => getOCSPResponse(ocspRequest))
+		.then(result =>
+		{
+			// noinspection JSCheckFunctionSignatures
+			asn1 = asn1js.fromBER(result);
+			ocspResponse = new OCSPResponse({ schema: asn1.result });
+			
+			if(("crls" in cmsSignedSimpl) === false)
+				cmsSignedSimpl.crls = [];
+			
+			const asn1Temp = asn1js.fromBER(ocspResponse.responseBytes.response.valueBlock.valueHex);
+			const basicResponse = new BasicOCSPResponse({ schema: asn1Temp.result });
+			
+			//region Append OCSP certificates into "certificates" array
+			if("certs" in basicResponse)
+			{
+				if(("certificates" in cmsSignedSimpl) === false)
+					cmsSignedSimpl.certificates = [];
+				
+				for(let i = 0; i < basicResponse.certs.length; i++)
+					cmsSignedSimpl.certificates.push(basicResponse.certs[i]);
+			}
+			//endregion
+			
+			cmsSignedSimpl.certificates.push(caCertSimpl);
+		});
+	
+	//region Append "complete_certificate_references" and "complete_revocation_references" attributes
+	sequence = sequence.then(() => completeCertificateReferences.fillValues(cmsSignedSimpl, 0, { hashAlgorithm: "SHA-1", signerCertificate: certSimpl }))
+		.then(() =>
+		{
+			cmsSignedSimpl.signerInfos[0].unsignedAttrs.attributes.push(completeCertificateReferences.makeAttribute());
+		});
+	
+	sequence = sequence.then(() => completeRevocationReferences.fillValues(cmsSignedSimpl, 0, { hashAlgorithm: "SHA-1", ocspResponses: [ ocspResponse ] }))
+		.then(() =>
+		{
+			//region Append two "revocation values" for two remaining certificates (for OCSP server and CA)
+			completeRevocationReferences.completeRevocationRefs.push(new CrlOcspRef());
+			completeRevocationReferences.completeRevocationRefs.push(new CrlOcspRef());
+			//endregion
+			
+			cmsSignedSimpl.signerInfos[0].unsignedAttrs.attributes.push(completeRevocationReferences.makeAttribute());
+		});
+	//endregion
+
+	//region Add "certificate-values" and "revocation-values" attributes
+	sequence = sequence.then(() =>
+	{
+		const certificateValues = new CertificateValues();
+		certificateValues.fillValues(cmsSignedSimpl);
+		cmsSignedSimpl.signerInfos[0].unsignedAttrs.attributes.push(certificateValues.makeAttribute());
+		
+		const revocationValues = new RevocationValues();
+		revocationValues.fillValues(cmsSignedSimpl, {
+			ocspResponses: [ ocspResponse.toSchema().toBER(false) ]
+		});
+		cmsSignedSimpl.signerInfos[0].unsignedAttrs.attributes.push(revocationValues.makeAttribute());
+	});
+	//endregion
+	
+	//region Add "CAdES-C-Timestamp" attribute
+	sequence = sequence.then(() => cadesCTimeStamp.getStampingBuffer(cmsSignedSimpl, 0, {
+		hashAlgorithm: "SHA-1",
+		signatureTimeStamp,
+		completeCertificateReferences,
+		completeRevocationReferences
+	})).then(result =>
+	{
+		return getTSPResponse(new TimeStampReq({
+			version: 1,
+			messageImprint: new MessageImprint({
+				hashAlgorithm: new AlgorithmIdentifier({
+					algorithmId: "1.3.14.3.2.26",
+					algorithmParams: new asn1js.Null()
+				}),
+				hashedMessage: new asn1js.OctetString({ valueHex: result })
+			})
+		}));
+	}).then(result =>
+	{
+		cmsSignedSimpl.signerInfos[0].unsignedAttrs.attributes.push(cadesCTimeStamp.makeAttribute({ tspResponse: result }));
+	});
+	//endregion
+	
+	//region Make final content
+	sequence = sequence.then(() =>
+	{
+		const cmsContent = new ContentInfo({
+			contentType: "1.2.840.113549.1.7.2",
+			content: cmsSignedSimpl.toSchema(true)
+		});
+		
+		cmsSignedBuffer = cmsContent.toSchema().toBER(false);
+	});
+	//endregion
+	
+	return sequence;
 }
 //*********************************************************************************
-function makeCAdES()
+function makeCAdESXL()
 {
-	return makeCAdESInternal();
+	return makeCAdESXLInternal().then(() =>
+	{
+		// noinspection InnerHTMLJS
+		let resultString = "-----BEGIN CMS-----\r\n";
+		resultString += formatPEM(window.btoa(arrayBufferToString(cmsSignedBuffer)));
+		resultString += "\r\n-----END CMS-----\r\n\r\n";
+		
+		// noinspection InnerHTMLJS
+		document.getElementById("new_data").innerHTML = resultString;
+		
+		parseCMSSigned();
+	});
+}
+//*********************************************************************************
+function handleParsingFile(evt)
+{
+	const tempReader = new FileReader();
+	
+	const currentFiles = evt.target.files;
+	
+	// noinspection AnonymousFunctionJS
+	tempReader.onload =
+		event =>
+		{
+			// noinspection JSUnresolvedVariable
+			cmsSignedBuffer = event.target.result;
+			parseCMSSigned();
+		};
+	
+	tempReader.readAsArrayBuffer(currentFiles[0]);
 }
 //*********************************************************************************
 context("Hack for Rollup.js", () =>
@@ -815,16 +1250,21 @@ context("Hack for Rollup.js", () =>
 	
 	// noinspection UnreachableCodeJS
 	makeCAdESAv3();
-	makeCAdES();
+	makeCAdESXL();
+	handleParsingFile();
 	setEngine();
 });
 //*********************************************************************************
 context("CAdES Complex Example", () =>
 {
-	it("Making CAdES-A v3 Data", () => makeCAdESAv3Internal().then(result =>
+	it("Making CAdES-A v3 Data", () => makeCAdESAv3Internal().then(() =>
 	{
-		console.log(`CAdES-A v3 Data: ${toBase64(arrayBufferToString(result))}`);
+		console.log(`CAdES-A v3 Data: ${toBase64(arrayBufferToString(cmsSignedBuffer))}`);
 	}));
-	it("Making Simple CAdES Data", () => makeCAdESInternal());
+	
+	it("Making CAdES-XL Data", () => makeCAdESXLInternal().then(() =>
+	{
+		console.log(`CAdES-XL Data: ${toBase64(arrayBufferToString(cmsSignedBuffer))}`);
+	}));
 });
 //*********************************************************************************

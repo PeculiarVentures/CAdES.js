@@ -2,6 +2,8 @@ import { createCommonAttributes } from "./common.js";
 export { createCommonAttributes };
 import ArchiveTimeStampV3 from "./ArchiveTimeStampV3.js";
 export { ArchiveTimeStampV3 };
+import AttributeCAdES from "./AttributeCAdES.js";
+export { AttributeCAdES };
 import ATSHashIndex from "./ATSHashIndex.js";
 export { ATSHashIndex };
 import CAdESCTimestamp from "./CAdESCTimestamp.js";

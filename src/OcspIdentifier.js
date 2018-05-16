@@ -97,7 +97,7 @@ export default class OcspIdentifier
 								tagClass: 3, // CONTEXT-SPECIFIC
 								tagNumber: 1 // [1]
 							},
-							value: [RelativeDistinguishedNames()]
+							value: [RelativeDistinguishedNames.schema()]
 						}),
 						new asn1js.Constructed({
 							name: (names.ocspResponderID || ""),

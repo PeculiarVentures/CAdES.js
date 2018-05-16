@@ -179,15 +179,15 @@ export default class ATSHashIndex
 		//endregion
 		
 		//region certificatesHashIndex
-		this.certificatesHashIndex = Array.from(asn1.result.certificatesHashIndex);
+		this.certificatesHashIndex = Array.from(asn1.result.certificatesHashIndex || []);
 		//endregion
 		
 		//region crlsHashIndex
-		this.crlsHashIndex = Array.from(asn1.result.crlsHashIndex);
+		this.crlsHashIndex = Array.from(asn1.result.crlsHashIndex || []);
 		//endregion
 		
 		//region unsignedAttrsHashIndex
-		this.unsignedAttrsHashIndex = Array.from(asn1.result.unsignedAttrsHashIndex);
+		this.unsignedAttrsHashIndex = Array.from(asn1.result.unsignedAttrsHashIndex || []);
 		//endregion
 		//endregion
 	}

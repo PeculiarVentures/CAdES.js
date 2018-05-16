@@ -11,7 +11,8 @@ export default {
 			format: "iife",
 			outro: `
 window.makeCAdESAv3 = makeCAdESAv3;
-window.makeCAdES = makeCAdES;
+window.makeCAdESXL = makeCAdESXL;
+window.handleParsingFile = handleParsingFile;
 
 function context(name, func) {}`
 		},

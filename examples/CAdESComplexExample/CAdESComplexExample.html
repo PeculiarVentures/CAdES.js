@@ -129,12 +129,38 @@
         <p class="header-block">Create new CAdES message</p>
         <div id="output_div" class="border-block">
             <a onclick="makeCAdESAv3()">Create CAdES-A v3 message</a>
-            <a onclick="makeCAdES()">Create simple CAdES-A</a>
+            <a onclick="makeCAdESXL()">Create CAdES-XL message</a>
             <p style="padding-top: 20px">
                 <label for="new_data" style="font-weight:bold;float:left;">BASE-64 encoded CAdES data:</label>
                 <textarea id="new_data">&lt;  CAdES data will be stored here &gt;</textarea>
             </p>
         </div>
+
+        <p class="header-block">Parse loaded/created CMS Advanced Signed Data (CAdES)</p>
+        <div id="cms-signed-data-block" class="border-block">
+            <p>
+                <label for="parsing_file">Load binary CMS Advanced Signed Data (CAdES):</label>
+                <input type="file" id="parsing_file" title="Input file" />
+            </p>
+            <div id="cms-dgst" class="two-col">
+                <p class="subject">Digest algorithms:</p>
+                <ul id="cms-dgst-algos"></ul>
+            </div>
+            <p><span class="type">Encapsulated cont. type:</span> <span id="cms-encap-type"></span></p>
+            <div id="cms-certs" class="two-col" style="display:none;">
+                <p class="subject">Certificates:</p>
+                <table id="cms-certificates"><tr><th>Serial number</th><th>Issuer</th></tr></table>
+            </div>
+            <div id="cms-crls" class="two-col" style="display:none;">
+                <p class="subject">CRLs:</p>
+                <table id="cms-rev-lists"><tr><th>Issuer</th></tr></table>
+            </div>
+            <p><span class="type">Number of signers:</span> <span id="cms-signs"></span></p>
+        </div>
     </div>
+
+    <script>
+	    document.getElementById('parsing_file').addEventListener('change', handleParsingFile, false);
+    </script>
 </body>
 </html>
