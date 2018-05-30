@@ -36,8 +36,8 @@ export default class CompleteRevocationReferences extends CompleteRevocationRefs
 		let hashAlgorithm = "SHA-1";
 		let ocspResponses = []; // Array of OCSP Responses
 		
-		const crlRefs = []; // in_window.org.pkijs.simpl.cades.CrlValidatedID();
-		const ocspRefs = []; // in_window.org.pkijs.simpl.cades.OcspResponsesID
+		const crlRefs = []; // CrlValidatedID;
+		const ocspRefs = []; // OcspResponsesID
 		//endregion
 		
 		//region Check input parameters

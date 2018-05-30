@@ -47,7 +47,7 @@ export default class SignatureTimeStamp extends ContentInfo
 		
 		//region Check "contentType"
 		if(this.contentType !== "1.2.840.113549.1.7.2") // signedData
-			throw new Error("Object's schema was not verified against input data for cades.signature_time_stamp");
+			throw new Error("Object's schema was not verified against input data for SignatureTimeStamp");
 		//endregion
 		
 		//region Get internal "CMS_SIGNED_DATA"
@@ -56,13 +56,13 @@ export default class SignatureTimeStamp extends ContentInfo
 		
 		//region Get internal TST_INFO
 		if(cmsSigned.encapContentInfo.eContentType !== "1.2.840.113549.1.9.16.1.4")
-			throw new Error("Incorrect format for cades.signature_time_stamp");
+			throw new Error("Incorrect format for SignatureTimeStamp");
 		
 		if(("eContent" in cmsSigned.encapContentInfo) === false)
-			throw new Error("Incorrect format for cades.signature_time_stamp");
+			throw new Error("Incorrect format for SignatureTimeStamp");
 		
 		if((cmsSigned.encapContentInfo.eContent instanceof asn1js.OctetString) === false)
-			throw new Error("Incorrect format for cades.signature_time_stamp");
+			throw new Error("Incorrect format for SignatureTimeStamp");
 		
 		const asn1 = asn1js.fromBER(cmsSigned.encapContentInfo.eContent.valueBlock.valueHex);
 		this.tstInfo = new TSTInfo({ schema: asn1.result });

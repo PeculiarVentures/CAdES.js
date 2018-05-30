@@ -44,9 +44,9 @@ export default class CAdESCTimestamp extends ContentInfo
 		
 		let resultBuffer = new ArrayBuffer(0);
 		
-		let signatureTimeStamp; // in_window.org.pkijs.simpl.cades.signatureTimeStamp
-		let completeCertificateReferences; // in_window.org.pkijs.simpl.cades.completeCertificateReferences
-		let completeRevocationReferences; // in_window.org.pkijs.simpl.cades.completeRevocationReferences
+		let signatureTimeStamp; // SignatureTimeStamp
+		let completeCertificateReferences; // CompleteCertificateReferences
+		let completeRevocationReferences; // CompleteRevocationReferences
 		//endregion
 		
 		//region Get a "crypto" extension
