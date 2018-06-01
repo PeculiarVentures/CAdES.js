@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/PeculiarVenturess/CAdES.js.git"
+    "url": "git://github.com/PeculiarVentures/CAdES.js.git"
   },
   "devDependencies": {
     "babel-cli": "latest",
