@@ -17,7 +17,6 @@
   "devDependencies": {
     "babel-cli": "latest",
     "babel-plugin-istanbul": "^4.1.5",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "latest",
     "cross-env": "^5.1.4",
     "eslint": "^4.19.1",
@@ -40,12 +39,15 @@
     "ex1": "cd examples/CAdESComplexExample && npm run build && cd ../..",
     "build:examples": "npm run ex1",
     "build:tests": "npm run build:examples",
-    "test:node": "cross-env NODE_ENV=test nyc mocha --timeout 40000 --require test/babel-register-option.js --require babel-polyfill",
+    "test:node": "cross-env NODE_ENV=test nyc mocha --timeout 40000 --require babel-register",
     "test": "node -e \"console.log('\\nWARNING: !!! in order to test PKIjs in Node environment you\\nwould need to install additional package node-webcrypto-ossl !!!\\n\\nThe node-webcrypto-ossl is not referenced in PKIjs dependencies\\nanymore because we were noticed users have a problems with\\nthe package installation, especially on Windows platform.\\n\\nThe node-webcrypto-ossl is NOT a mandatory for testing PKIjs -\\nyou could visit test/browser subdir and run all the same tests\\nin your favorite browser.\\n\\nAlso you could check CircleCI - for each build the service runs\\nall tests and results could be easily observed.\\n\\nIf you do need to run PKIjs tests locally using Node please use\\nnpm run test:node')\"",
     "prepublishOnly": "npm run build"
   },
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "name": "cadesjs",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "dependencies": {
     "asn1js": "latest",
     "pkijs": "latest",
